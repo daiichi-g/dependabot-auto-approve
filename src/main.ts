@@ -7,12 +7,14 @@ async function run(): Promise<void> {
     const isCheckOnly: boolean = core.getInput('check-only') === 'true'
 
     const pullRequest = github.context.payload.pull_request
+    const baseSha = github.context.payload.pull_request?.base.sha
+    const headSha = github.context.payload.pull_request?.head.sha
+
 
     core.debug(`token: ${token.length > 0 ? '*****' : ''}...`)
     core.debug(`isCheckOnly: ${isCheckOnly}`)
-    core.debug(`base.sha: ${github.context.payload.pull_request?.base.sha}`)
-    core.debug(`base.sha: ${github.context.payload.pull_request?.head.sha}`)
-    core.debug(`head.sha: ${isCheckOnly}`)
+    core.debug(`base.sha: ${baseSha}`)
+    core.debug(`head.sha: ${headSha}`)
     core.debug('======================== pullRequest ========================')
     core.debug(`${JSON.stringify(pullRequest, null, '    ')}`)
     core.debug('======================== context ========================')
@@ -33,12 +35,13 @@ async function run(): Promise<void> {
       repo: github.context.repo.repo,
       branch: 'main'
     })
-    if(res.data.commit.sha !== pullRequest.base.sha) {
+    const mainSha = res.data.commit.sha
+    if (mainSha !== baseSha) {
       await octokit.rest.issues.createComment({
         issue_number: pullRequest.number,
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        body: 'mainブランチが更新されています'
+        body: `mainブランチが更新されています\n- main:${mainSha}\n- base: ${baseSha}\n- head: ${headSha}`
       })
       core.setFailed('ERROR: mainブランチが更新されています。')
       return
