@@ -1,3 +1,14 @@
+## 概要
+
+```mermaid
+flowchart LR
+A["mainブランチの更新チェック"]-->|更新なし|B["PRをマージ(承認)"]
+
+A-->|更新あり|C["PRに「@dependabot rebase」コメントを追加"]
+
+```
+
+
 ## 使い方
 
 ### 承認
