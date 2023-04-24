@@ -2,10 +2,13 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  milliseconds: # change this
+  github-token:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'Personal access token with pull request write permissions'
+  check-only:
+    required: false
+    description: 'Only check, do not merge the PR'
+    default: false
 runs:
   using: 'node16'
   main: 'dist/index.js'
