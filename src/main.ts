@@ -10,6 +10,9 @@ async function run(): Promise<void> {
 
     core.debug(`token: ${token.length > 0 ? '*****' : ''}...`)
     core.debug(`isCheckOnly: ${isCheckOnly}`)
+    core.debug(`base.sha: ${github.context.payload.pull_request?.base.sha}`)
+    core.debug(`base.sha: ${github.context.payload.pull_request?.head.sha}`)
+    core.debug(`head.sha: ${isCheckOnly}`)
     core.debug('======================== pullRequest ========================')
     core.debug(`${JSON.stringify(pullRequest, null, '    ')}`)
     core.debug('======================== context ========================')
@@ -23,11 +26,30 @@ async function run(): Promise<void> {
     }
 
     const octokit = github.getOctokit(token)
+
+    // PR作成/更新後にmainブランチが変更されてないことを確認
+    const res = await octokit.rest.repos.getBranch({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      branch: 'main'
+    })
+    if(res.data.commit.sha !== pullRequest.base.sha) {
+      await octokit.rest.issues.createComment({
+        issue_number: pullRequest.number,
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        body: 'mainブランチが更新されています'
+      })
+      core.setFailed('ERROR: mainブランチが更新されています。')
+      return
+    }
+
+    // PRをマージする
     const result = await octokit.rest.issues.createComment({
       issue_number: pullRequest.number,
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
-      body: 'コメントテスト'
+      body: 'PRをマージする'
     })
 
     core.debug(`result: ${JSON.stringify(result, null, '    ')}`)
