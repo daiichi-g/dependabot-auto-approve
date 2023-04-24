@@ -23,16 +23,11 @@ jobs:
           npm run package
       - name: ビルド成果物に差異がある場合のみコミット
         run: |
-          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
-            echo "Detected uncommitted changes after build.  See status below:"
-            git diff
-          
-            git config user.name github-actions
-            git config user.email github-actions@github.com
-            git add dist
-            git commit -a -m "prod dependencies"
-            git push --force origin HEAD:releases/v1
-          fi
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add dist
+          git commit -a -m "prod dependencies"
+          git push --force origin HEAD:releases/v1
       - name: V1タグを更新
         run: |
           git push -d origin v1
