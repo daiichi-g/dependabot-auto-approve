@@ -41,26 +41,36 @@ async function run(): Promise<void> {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         body: [
-          `mainブランチが更新されています( ${baseSha} → ${mainSha} )`,
-          'dependabotにPR更新を依頼します',
+          `mainブランチ更新あり( ${baseSha} → ${mainSha} )`,
           '@dependabot rebase'
         ].join('\n')
       })
-      core.setFailed('ERROR: mainブランチが更新されています。')
+      core.setFailed(
+        'ERROR: mainブランチが更新されているため、承認処理を中断しました。'
+      )
+      return
+    }
+
+    if (isCheckOnly) {
       return
     }
 
     // PRをマージする
+    const mergeMethod = pullRequest.commits > 1 ? 'merge' : 'rebase'
     const result = await octokit.rest.issues.createComment({
       issue_number: pullRequest.number,
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
-      body: 'PRをマージする'
+      body: `承認(${mergeMethod})...`
+    })
+    octokit.rest.pulls.merge({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      pull_number: pullRequest.number,
+      merge_method: mergeMethod
     })
 
     core.debug(`result: ${JSON.stringify(result, null, '    ')}`)
-
-    core.setOutput('time', new Date().toTimeString())
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
