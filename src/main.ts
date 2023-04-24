@@ -10,7 +10,6 @@ async function run(): Promise<void> {
     const baseSha = github.context.payload.pull_request?.base.sha
     const headSha = github.context.payload.pull_request?.head.sha
 
-
     core.debug(`token: ${token.length > 0 ? '*****' : ''}...`)
     core.debug(`isCheckOnly: ${isCheckOnly}`)
     core.debug(`base.sha: ${baseSha}`)
@@ -41,7 +40,11 @@ async function run(): Promise<void> {
         issue_number: pullRequest.number,
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        body: `mainブランチが更新されています\n- main:${mainSha}\n- base: ${baseSha}\n- head: ${headSha}`
+        body: [
+          `mainブランチが更新されています( ${baseSha} → ${mainSha} )`,
+          'dependabotにPR更新を依頼します',
+          '@dependabot rebase'
+        ].join('\n')
       })
       core.setFailed('ERROR: mainブランチが更新されています。')
       return
