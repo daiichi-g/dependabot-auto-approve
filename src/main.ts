@@ -10,15 +10,9 @@ async function run(): Promise<void> {
     const baseSha = github.context.payload.pull_request?.base.sha
     const headSha = github.context.payload.pull_request?.head.sha
 
-    core.debug(`token: ${token.length > 0 ? '*****' : ''}...`)
     core.debug(`isCheckOnly: ${isCheckOnly}`)
     core.debug(`base.sha: ${baseSha}`)
     core.debug(`head.sha: ${headSha}`)
-    core.debug('======================== pullRequest ========================')
-    core.debug(`${JSON.stringify(pullRequest, null, '    ')}`)
-    core.debug('======================== context ========================')
-    core.debug(`${JSON.stringify(github.context, null, '    ')}`)
-    core.debug('=========================================================')
 
     // アクションの実行イベントを検証
     if (!pullRequest) {
