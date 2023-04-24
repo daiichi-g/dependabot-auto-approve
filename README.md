@@ -31,4 +31,5 @@ A-->|更新あり|C["PRに「@dependabot rebase」コメントを追加"]
 |:---|:---:|:---|
 | github-token |必須 | GitHubトークン(※1) |
 | check-only | | true: mainブランチの更新チェックのみ |
-(※1) Personal access tokes(Classic)、または Fine-grained tokens(contents,pull_request Read and Write)を指定
+
+※1 Personal access tokes(Classic)、または Fine-grained tokens(contents,pull_request Read and Write)を指定
