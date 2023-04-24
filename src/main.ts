@@ -22,6 +22,16 @@ async function run(): Promise<void> {
       return
     }
 
+    const octokit = github.getOctokit(token)
+    const result = await octokit.rest.issues.createComment({
+      issue_number: pullRequest.number,
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      body: 'コメントテスト'
+    })
+
+    core.debug(`result: ${JSON.stringify(result, null, '    ')}`)
+
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
