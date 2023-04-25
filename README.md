@@ -1,4 +1,6 @@
-## 概要
+# dependabotが作成したPRを承認するアクション
+PRの作成後にmainブランチが更新されていない場合のみ承認  
+(mainブランチが更新されている場合は、dependabotにPRブランチのrebaseを依頼)
 
 ```mermaid
 flowchart LR
@@ -15,14 +17,14 @@ A-->|更新あり|C["PRに「@dependabot rebase」コメントを追加"]
 ```yaml
       - uses: daiichi-g/dependabot-auto-approve@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 ```
 
 ### mainブランチの更新チェックのみ
 ```yaml
       - uses: daiichi-g/dependabot-auto-approve@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           check-only: true
 ```
 
@@ -32,4 +34,4 @@ A-->|更新あり|C["PRに「@dependabot rebase」コメントを追加"]
 | github-token |必須 | GitHubトークン(※1) |
 | check-only | | true: mainブランチの更新チェックのみ |
 
-※1 Personal access tokes(Classic)、または Fine-grained tokens(contents,pull_request Read and Write)を指定
+※1 Personal access tokens(Classic)、または Fine-grained tokens(contents,pull_request Read and Write)を指定
