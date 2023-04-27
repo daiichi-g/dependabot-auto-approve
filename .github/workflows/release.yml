@@ -1,9 +1,8 @@
-name: release
+name: Release
 on:
   push:
     branches:
       - 'main'
-      - 'issue4'
     paths-ignore:
       - '**.md'
   workflow_dispatch:
